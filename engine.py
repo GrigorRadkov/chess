@@ -23,15 +23,53 @@ class GameState():
             self.board[move.startRow][move.startCol] = "--"
             self.board[move.endRow][move.endCol] = move.pieceMoved
             self.moveLog.append(move)
-            self.whitToMove = not self.whiteToMove #swap player turn
+            self.whiteToMove = not self.whiteToMove #swap player turn
 
     def undoMove(self):
         if len(self.moveLog) != 0: 
             move = self.moveLog.pop()
             self.board[move.startRow][move.startCol] = move.pieceMoved
             self.board[move.endRow][move.endCol]     = move.pieceCaptured
-            self.whitToMove = not self.whiteToMove #swap player turn when undoing
-            
+            self.whiteToMove = not self.whiteToMove #swap player turn when undoing
+
+    def getValidMoves(self):
+        pass
+
+    def getAllPossibleMoves(self):
+        moves = []
+        for r in range(len(self.board)): #rows
+            for c in range(len(self.board[r])): #columns in row
+                turn = self.board[r][c][0]
+                if self.whiteToMove == turn or not self.whiteToMove == turn:
+                    piece = self.board[r][c][1]
+                    if piece == 'p': # Switch to match case statements, but need to fix pylance version or something
+                        self.getPawnMoves(r, c, moves)
+                    elif piece == 'N':
+                        self.getKnightMoves(r, c, moves)
+                    elif piece == 'B':
+                        self.getBishopMoves(r, c, moves)
+                    elif piece == 'R':
+                        self.getRookMoves(r, c, moves)
+                    elif piece == 'Q':
+                        self.getQueenMoves(r, c, moves)
+                    elif piece == 'K':
+                        self.getKingMoves(r, c, moves)
+
+        return moves
+
+    def getPawnMoves(self, row, col, moves):
+        pass
+    def getKnightMoves(self, row, col, moves):
+        pass
+    def getBishopMoves(self, row, col, moves):
+        pass
+    def getRookMoves(self, row, col, moves):
+        pass
+    def getQueenMoves(self, row, col, moves):
+        pass
+    def getKingMoves(self, row, col, moves):
+        pass
+
 class Move():
 
     #Notation switch

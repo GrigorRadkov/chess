@@ -28,6 +28,8 @@ def main():
     clock = pg.time.Clock()
     screen.fill(pg.Color(gray_color))
     gameState = engine.GameState()
+    validMoves = gameState.getAllPossibleMoves()
+    moveMade = False #Use this flag in order to generate valid moves, only when the board state changes. Otherwise you would generate it every frame, which would be ressource intensive.
     sqSelected = () #col, row of selected square
     clickHistory = [] # keeps track only of two subsequent clicks
     running = True
@@ -49,15 +51,22 @@ def main():
                     print(sqSelected)
                     print(clickHistory)
                     move = engine.Move(clickHistory[0], clickHistory[1], gameState.board)
-                    gameState.makeMove(move)
+                    if move in validMoves:
+                        gameState.makeMove(move)
+                        moveMade = True
                     sqSelected = ()               
                     clickHistory = []
+                    
             elif event.type == pg.KEYDOWN:
                 if event.key == pg.K_1:
                     gameState.undoMove()
+                    moveMade = True
                 else:
                     return 0
 
+        if moveMade:
+            validMoves = gameState.getAllPossibleMoves()
+            moveMade = False
 
         drawGameState(screen, gameState)
         clock.tick(MAX_FPS)
