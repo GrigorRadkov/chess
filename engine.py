@@ -17,7 +17,13 @@ class GameState():
         ]
         self.whiteToMove = True
         self.moveLog = []
-    
+
+    def makeMove(self, move):
+        if move.pieceMoved != "--":
+            self.board[move.startRow][move.startCol] = "--"
+            self.board[move.endRow][move.endCol] = move.pieceMoved
+            self.moveLog.append(move)
+            self.whitToMove = not self.whiteToMove #swap player turn
 class Move():
 
     #Notation switch
@@ -31,8 +37,8 @@ class Move():
         self.startRow = start[1]
         self.endCol = end[0]
         self.endRow = end[1]
-        self.pieceMoved = board[self.startCol][self.startRow]
-        self.pieceCaptured = board[self.endCol][self.endRow]
+        self.pieceMoved = board[self.startRow][self.startCol]
+        self.pieceCaptured = board[self.endRow][self.endCol]
 
     #Add full chess.com notation
     def getChessNotation(self):

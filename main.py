@@ -46,24 +46,17 @@ def main():
                     sqSelected = ()
                     clickHistory = []
                 if len(clickHistory) == 2:
+                    print(sqSelected)
+                    print(clickHistory)
+                    move = engine.Move(clickHistory[0], clickHistory[1], gameState.board)
+                    gameState.makeMove(move)
+                    sqSelected = ()               
                     clickHistory = []
-        
-                print(sqSelected)
-                print(clickHistory)               
 
-                #checkOccupancy(col, row, gameState)
 
         drawGameState(screen, gameState)
         clock.tick(MAX_FPS)
         pg.display.flip()
-
-def checkOccupancy(x, y, board):
-    piece = board[x][y]
-    if piece != "--":
-        makeMove(piece, board)
-
-def makeMove(piece, board):
-    return 0
 
 def drawGameState(screen, gs):
     drawBaseBoard(screen)
