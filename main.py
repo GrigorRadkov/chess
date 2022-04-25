@@ -1,5 +1,5 @@
 from cmath import rect
-
+import math as m
 from matplotlib.pyplot import bar
 import pygame as pg
 import engine
@@ -28,15 +28,42 @@ def main():
     clock = pg.time.Clock()
     screen.fill(pg.Color(gray_color))
     gameState = engine.GameState()
-    print(gameState.board)
+    sqSelected = () #col, row of selected square
+    clickHistory = [] # keeps track only of two subsequent clicks
     running = True
     while running:
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 running = False
+            elif event.type == pg.MOUSEBUTTONDOWN:
+                x, y = pg.mouse.get_pos()
+                col = x // SQ_SIZE
+                row = y // SQ_SIZE
+                if sqSelected != (col, row):
+                    sqSelected = col, row
+                    clickHistory.append(sqSelected)
+                else:
+                    sqSelected = ()
+                    clickHistory = []
+                if len(clickHistory) == 2:
+                    clickHistory = []
+        
+                print(sqSelected)
+                print(clickHistory)               
+
+                #checkOccupancy(col, row, gameState)
+
         drawGameState(screen, gameState)
         clock.tick(MAX_FPS)
         pg.display.flip()
+
+def checkOccupancy(x, y, board):
+    piece = board[x][y]
+    if piece != "--":
+        makeMove(piece, board)
+
+def makeMove(piece, board):
+    return 0
 
 def drawGameState(screen, gs):
     drawBaseBoard(screen)
