@@ -24,6 +24,14 @@ class GameState():
             self.board[move.endRow][move.endCol] = move.pieceMoved
             self.moveLog.append(move)
             self.whitToMove = not self.whiteToMove #swap player turn
+
+    def undoMove(self):
+        if len(self.moveLog) != 0: 
+            move = self.moveLog.pop()
+            self.board[move.startRow][move.startCol] = move.pieceMoved
+            self.board[move.endRow][move.endCol]     = move.pieceCaptured
+            self.whitToMove = not self.whiteToMove #swap player turn when undoing
+            
 class Move():
 
     #Notation switch

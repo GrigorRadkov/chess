@@ -52,6 +52,11 @@ def main():
                     gameState.makeMove(move)
                     sqSelected = ()               
                     clickHistory = []
+            elif event.type == pg.KEYDOWN:
+                if event.key == pg.K_1:
+                    gameState.undoMove()
+                else:
+                    return 0
 
 
         drawGameState(screen, gameState)
