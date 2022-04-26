@@ -29,6 +29,8 @@ def main():
     screen.fill(pg.Color(gray_color))
     gameState = engine.GameState()
     validMoves = gameState.getAllPossibleMoves()
+    for obj in validMoves:
+        print (obj.pieceMoved, (obj.startRow, obj.startCol), (obj.endRow, obj.endCol))
     moveMade = False #Use this flag in order to generate valid moves, only when the board state changes. Otherwise you would generate it every frame, which would be ressource intensive.
     sqSelected = () #col, row of selected square
     clickHistory = [] # keeps track only of two subsequent clicks
@@ -41,8 +43,8 @@ def main():
                 x, y = pg.mouse.get_pos()
                 col = x // SQ_SIZE
                 row = y // SQ_SIZE
-                if sqSelected != (col, row):
-                    sqSelected = col, row
+                if sqSelected != (row, col):
+                    sqSelected = row, col
                     clickHistory.append(sqSelected)
                 else:
                     sqSelected = ()
@@ -50,6 +52,7 @@ def main():
                 if len(clickHistory) == 2:
                     print(sqSelected)
                     print(clickHistory)
+                    
                     move = engine.Move(clickHistory[0], clickHistory[1], gameState.board)
                     if move in validMoves:
                         gameState.makeMove(move)
@@ -66,6 +69,8 @@ def main():
 
         if moveMade:
             validMoves = gameState.getAllPossibleMoves()
+            for obj in validMoves:
+                print (obj.pieceMoved, (obj.startRow, obj.startCol), (obj.endRow, obj.endCol))
             moveMade = False
 
         drawGameState(screen, gameState)

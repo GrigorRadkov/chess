@@ -2,6 +2,9 @@
 ###
 ###
 
+from numpy import isin
+
+
 class GameState():
     def __init__(self):
 
@@ -40,10 +43,10 @@ class GameState():
         for r in range(len(self.board)): #rows
             for c in range(len(self.board[r])): #columns in row
                 turn = self.board[r][c][0]
-                if self.whiteToMove == turn or not self.whiteToMove == turn:
+                if (self.whiteToMove and turn == "w") or (not self.whiteToMove and turn == "b"):
                     piece = self.board[r][c][1]
-                    if piece == 'p': # Switch to match case statements, but need to fix pylance version or something
-                        self.getPawnMoves(r, c, moves)
+                    if piece == 'p': # Switch to match case statements, update to python 3.10 maybe
+                        moves = self.getPawnMoves(r, c, moves)         
                     elif piece == 'N':
                         self.getKnightMoves(r, c, moves)
                     elif piece == 'B':
@@ -58,7 +61,27 @@ class GameState():
         return moves
 
     def getPawnMoves(self, row, col, moves):
-        pass
+        if self.whiteToMove == True:
+            if self.board[row-1][col] == "--":
+                moves.append(Move((row, col), (row-1, col), self.board))
+            if  ((col - 1) >= 0) and ((row - 1) >= 0):
+                if (self.board[row-1][col-1][0] == "b"): #Capture diagonally left
+                    moves.append(Move((row, col), (row-1, col-1), self.board))
+            if  ((col + 1 ) <= 7) and ((row - 1) >= 0):
+                if (self.board[row-1][col+1][0] == "b"): #Capture diagonally right
+                    moves.append(Move((row, col), (row-1, col+1), self.board))
+        else:
+            if self.board[row+1][col] == "--":
+                moves.append(Move((row, col), (row+1, col), self.board))
+            if  ((col - 1) >= 0) and ((row + 1) <= 7):
+                if (self.board[row+1][col-1][0] == "w"): #Capture diagonally left
+                    moves.append(Move((row, col), (row+1, col-1), self.board))
+            if  ((col + 1 ) <= 7) and ((row + 1) <= 7):
+                if (self.board[row+1][col+1][0] == "w"): #Capture diagonally right
+                    moves.append(Move((row, col), (row+1, col+1), self.board))
+
+        return moves
+
     def getKnightMoves(self, row, col, moves):
         pass
     def getBishopMoves(self, row, col, moves):
@@ -79,12 +102,19 @@ class Move():
     colsToFile = {val: key for key, val in filesToCols.items()}
 
     def __init__(self, start, end, board):
-        self.startCol = start[0]
-        self.startRow = start[1]
-        self.endCol = end[0]
-        self.endRow = end[1]
+        self.startRow = start[0]
+        self.startCol = start[1]
+        self.endRow = end[0]
+        self.endCol = end[1]
         self.pieceMoved = board[self.startRow][self.startCol]
         self.pieceCaptured = board[self.endRow][self.endCol]
+        self.moveId = self.startRow*1000 + self.startCol*100 + self.endRow*10 + self.endCol
+        print(self.moveId)
+
+    def __eq__(self, other):
+        if isinstance(other, Move):
+            return self.moveId == other.moveId
+        return False
 
     #Add full chess.com notation
     def getChessNotation(self):
