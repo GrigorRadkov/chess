@@ -303,7 +303,56 @@ class GameState():
     def getQueenMoves(self, row, col, moves):
         pass
     def getKingMoves(self, row, col, moves):
-        pass
+        
+        if self.whiteToMove == True:
+            for i in range(-1, 2):
+                try:
+                    if self.board[row+1][col+i][0] not in ("w"): #Check Downwards
+                        moves.append(Move((row, col), (row+1, col+i), self.board))
+                except IndexError:
+                    pass
+                try:
+                    if self.board[row-1][col+i][0] not in ("w"): #Check Upwards
+                        moves.append(Move((row, col), (row-1, col+i), self.board))
+                except IndexError:
+                    pass
+
+            try:
+                if self.board[row][col-1][0] not in ("w"): #Check left of king
+                    moves.append(Move((row, col), (row, col-1), self.board)) 
+            except IndexError:
+                pass
+            try:
+                if self.board[row][col+1][0] not in ("w"): #Check right of king
+                    moves.append(Move((row, col), (row, col+1), self.board)) 
+            except IndexError:
+                pass
+        else:
+            for i in range(-1, 2):
+                try:
+                    if self.board[row+1][col+i][0] not in ("w"): #Check Downwards
+                        moves.append(Move((row, col), (row+1, col+i), self.board))
+                except IndexError:
+                    pass
+                try:
+                    if self.board[row-1][col+i][0] not in ("w"): #Check Upwards
+                        moves.append(Move((row, col), (row-1, col+i), self.board))
+                except IndexError:
+                    pass
+
+            try:
+                if self.board[row][col-1][0] not in ("w"): #Check left of king
+                    moves.append(Move((row, col), (row, col-1), self.board)) 
+            except IndexError:
+                pass
+            try:
+                if self.board[row][col+1][0] not in ("w"): #Check right of king
+                    moves.append(Move((row, col), (row, col+1), self.board)) 
+            except IndexError:
+                pass
+
+        return moves
+    
     def promotePawn(self, row, col, moves):
         pass
 
