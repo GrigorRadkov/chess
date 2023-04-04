@@ -192,7 +192,24 @@ class GameState():
         return moves
 
     def getBishopMoves(self, row, col, moves):
-        pass
+        directions = ((-1, -1), (1, -1), (-1, 1), (1, 1)) #Up left diagonally, Down Left diagonally, Up right diagonally, Down right diagonally
+        enemyColor =  "b" if self.whiteToMove else "w"
+
+        for d in directions:
+            for i in range(1, 8, 1):
+                currRow = row + d[0] * i #Iterate from current row towards current direction
+                currCol = col + d[1] * i #Iterate from current col towards current direction
+                if((0 <= currRow < 8) and (0 <= currCol < 8)):
+                    if(self.board[currRow][currCol] == "--"):
+                        moves.append(Move((row, col), (currRow, currCol), self.board))
+                    elif (self.board[currRow][currCol][0] == enemyColor):
+                        moves.append(Move((row, col), (currRow, currCol), self.board))
+                        break #Break upon first enemy encountered
+                    else:
+                        break #Break in friendly unit case
+
+        return moves
+    
     def getRookMoves(self, row, col, moves):
 
         blockedUp = 0
