@@ -146,7 +146,9 @@ class GameState():
         return moves
     
     def getQueenMoves(self, row, col, moves):
-        pass
+        self.getRookMoves(row, col, moves)
+        self.getBishopMoves(row, col, moves)
+        
 
     def getKingMoves(self, row, col, moves):    
         directions = ((-1, 0), (1, 0), (0, -1), (0, 1), (-1, -1), (1, -1), (-1, 1), (1, 1)) #All directions
