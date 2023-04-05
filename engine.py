@@ -92,102 +92,18 @@ class GameState():
         return moves
 
     def getKnightMoves(self, row, col, moves):
+        directions = ((2, 1), (2, -1), (-2, 1), (-2, -1), (1, 2), (-1, 2), (1, -2), (-1, -2)) #All directions
+        enemyColor =  "b" if self.whiteToMove else "w"
 
-        if self.whiteToMove == True:
-            #Check Downwards
-            try:
-                if(self.board[row+2][col+1][0] != "w"):
-                    moves.append(Move((row, col), (row+2, col+1), self.board))
-            except IndexError:
-                pass
-            try:
-                if(self.board[row+2][col-1][0] != "w"):
-                    moves.append(Move((row, col), (row+2, col-1), self.board))
-            except IndexError:
-                pass
-            #Check Upwards
-            try:
-                if(self.board[row-2][col+1][0] != "w"):
-                    moves.append(Move((row, col), (row-2, col+1), self.board))
-            except IndexError:
-                pass
-            try:
-                if(self.board[row-2][col-1][0] != "w"):
-                    moves.append(Move((row, col), (row-2, col-1), self.board))
-            except IndexError:
-                pass
-                
-            #Check Right
-            try:
-                if(self.board[row+1][col+2][0] != "w"):
-                    moves.append(Move((row, col), (row+1, col+2), self.board))
-            except IndexError:
-                pass
-            try:
-                if(self.board[row-1][col+2][0] != "w"):
-                    moves.append(Move((row, col), (row-1, col+2), self.board))
-            except IndexError:
-                pass
-
-            #Check Left
-            try:
-                if(self.board[row+1][col-2][0] != "w"):
-                    moves.append(Move((row, col), (row+1, col-2), self.board))
-            except IndexError:
-                pass
-            try:
-                if(self.board[row-1][col+2][0] != "w"):
-                    moves.append(Move((row, col), (row-1, col-2), self.board))
-            except IndexError:
-                pass
-        #BLACK TURN
-        else:
-            #Check Upwards
-            try:
-                if(self.board[row+2][col+1][0] != "b"):
-                    moves.append(Move((row, col), (row+2, col+1), self.board))
-            except IndexError:
-                pass
-            try:
-                if(self.board[row+2][col-1][0] != "b"):
-                    moves.append(Move((row, col), (row+2, col-1), self.board))
-            except IndexError:
-                pass
-            #Check Downwards
-            try:
-                if(self.board[row-2][col+1][0] != "b"):
-                    moves.append(Move((row, col), (row-2, col+1), self.board))
-            except IndexError:
-                pass
-            try:
-                if(self.board[row-2][col-1][0] != "b"):
-                    moves.append(Move((row, col), (row-2, col-1), self.board))
-            except IndexError:
-                pass
-                
-            #Check Right
-            try:
-                if(self.board[row+1][col+2][0] != "b"):
-                    moves.append(Move((row, col), (row+1, col+2), self.board))
-            except IndexError:
-                pass
-            try:
-                if(self.board[row-1][col+2][0] != "b"):
-                    moves.append(Move((row, col), (row-1, col+2), self.board))
-            except IndexError:
-                pass
-
-            #Check Left
-            try:
-                if(self.board[row+1][col-2][0] != "b"):
-                    moves.append(Move((row, col), (row+1, col-2), self.board))
-            except IndexError:
-                pass
-            try:
-                if(self.board[row-1][col+2][0] != "b"):
-                    moves.append(Move((row, col), (row-1, col-2), self.board))
-            except IndexError:
-                pass
+        for d in directions:
+            currRow = row + d[0]  
+            currCol = col + d[1]  
+            print(d, currRow, currCol)
+            if((0 <= currRow < 8) and (0 <= currCol < 8)):
+                if(self.board[currRow][currCol] == "--"):
+                    moves.append(Move((row, col), (currRow, currCol), self.board))
+                elif (self.board[currRow][currCol][0] == enemyColor):
+                    moves.append(Move((row, col), (currRow, currCol), self.board))
 
         return moves
 
@@ -211,162 +127,40 @@ class GameState():
         return moves
     
     def getRookMoves(self, row, col, moves):
+        directions = ((-1, 0), (1, 0), (0, -1), (0, 1)) #Up, Down, Left, Right
+        enemyColor =  "b" if self.whiteToMove else "w"
 
-        blockedUp = 0
-        blockedDw = 0
-        blockedRi = 0
-        blockedLe = 0
-
-        if self.whiteToMove == True:
-            #UPWARDS
-            for i in range(row-1, -1, -1): #Check all current column positions from the start row to the upward board edge. I.e. from curr row to row 0.
-                if(blockedUp == 1):
-                    break
-                if (self.board[i][col] == "--"):
-                    moves.append(Move((row, col), (i, col), self.board))
-                if (self.board[i][col][0] == "b"):
-                    blockedUp = 1 #If an enemy piece is encountered mark it as a valid move, but block further checking up the board.
-                    moves.append(Move((row, col), (i, col), self.board))
-                if (self.board[i][col][0] == "w"): #If a friendly piece is encountered then mark as blocked and do nothing.
-                    blockedUp = 1
-
-            #DOWNWARDS
-            for i in range(row+1, 8, 1): #Check all current column positions from the start row to the downward board edge. I.e. from curr row to row 7.
-                if(blockedDw == 1):
-                    break
-                if (self.board[i][col] == "--"):
-                    moves.append(Move((row, col), (i, col), self.board))
-                if (self.board[i][col][0] == "b"):
-                    blockedDw = 1 #If an enemy piece is encountered mark it as a valid move, but block further checking up the board.
-                    moves.append(Move((row, col), (i, col), self.board))
-                if (self.board[i][col][0] == "w"): #If a friendly piece is encountered then mark as blocked and do nothing.
-                    blockedDw = 1
-          
-            #RIGHT, towards H
-            for i in range(col+1, 8, 1): #Check all current row positions from the start col to the rightmost board edge. I.e. from curr col to col H.
-                if(blockedRi == 1):
-                    break
-                if (self.board[row][i] == "--"):
-                    moves.append(Move((row, col), (row, i), self.board))
-                if (self.board[row][i][0] == "b"):
-                    blockedRi = 1 #If an enemy piece is encountered mark it as a valid move, but block further checking up the board.
-                    moves.append(Move((row, col), (row, i), self.board))
-                if (self.board[row][i][0] == "w"): #If a friendly piece is encountered then mark as blocked and do nothing.
-                    blockedRi = 1
-
-            #LEFT, towards A
-            for i in range(col-1, -1, -1): #Check all current row positions from the start col to the leftmost board edge. I.e. from curr col to col A.
-                if(blockedLe == 1):
-                    break
-                if (self.board[row][i] == "--"):
-                    moves.append(Move((row, col), (row, i), self.board))
-                if (self.board[row][i][0] == "b"):
-                    blockedLe = 1 #If an enemy piece is encountered mark it as a valid move, but block further checking up the board.
-                    moves.append(Move((row, col), (row, i), self.board))
-                if (self.board[row][i][0] == "w"): #If a friendly piece is encountered then mark as blocked and do nothing.
-                    blockedLe = 1
-
-        else:
-            #UPWARDS
-            for i in range(row-1, -1, -1): #Check all current column positions from the start row to the upward board edge. I.e. from curr row to row 0.
-                if(blockedUp == 1):
-                    break
-                if (self.board[i][col] == "--"):
-                    moves.append(Move((row, col), (i, col), self.board))
-                if (self.board[i][col][0] == "w"):
-                    blockedUp = 1 #If an enemy piece is encountered mark it as a valid move, but block further checking up the board.
-                    moves.append(Move((row, col), (i, col), self.board))
-                if (self.board[i][col][0] == "b"): #If a friendly piece is encountered then mark as blocked and do nothing.
-                    blockedUp = 1
-
-            #DOWNWARDS
-            for i in range(row+1, 8, 1): #Check all current column positions from the start row to the downward board edge. I.e. from curr row to row 7.
-                if(blockedDw == 1):
-                    break
-                if (self.board[i][col] == "--"):
-                    moves.append(Move((row, col), (i, col), self.board))
-                if (self.board[i][col][0] == "w"):
-                    blockedDw = 1 #If an enemy piece is encountered mark it as a valid move, but block further checking up the board.
-                    moves.append(Move((row, col), (i, col), self.board))
-                if (self.board[i][col][0] == "b"): #If a friendly piece is encountered then mark as blocked and do nothing.
-                    blockedDw = 1
-          
-            #RIGHT, towards H
-            for i in range(col+1, 8, 1): #Check all current row positions from the start col to the rightmost board edge. I.e. from curr col to col H.
-                if(blockedRi == 1):
-                    break
-                if (self.board[row][i] == "--"):
-                    moves.append(Move((row, col), (row, i), self.board))
-                if (self.board[row][i][0] == "w"):
-                    blockedRi = 1 #If an enemy piece is encountered mark it as a valid move, but block further checking up the board.
-                    moves.append(Move((row, col), (row, i), self.board))
-                if (self.board[row][i][0] == "b"): #If a friendly piece is encountered then mark as blocked and do nothing.
-                    blockedRi = 1
-
-            #LEFT, towards A
-            for i in range(col-1, -1, -1): #Check all current row positions from the start col to the leftmost board edge. I.e. from curr col to col A.
-                if(blockedLe == 1):
-                    break
-                if (self.board[row][i] == "--"):
-                    moves.append(Move((row, col), (row, i), self.board))
-                if (self.board[row][i][0] == "w"):
-                    blockedLe = 1 #If an enemy piece is encountered mark it as a valid move, but block further checking up the board.
-                    moves.append(Move((row, col), (row, i), self.board))
-                if (self.board[row][i][0] == "b"): #If a friendly piece is encountered then mark as blocked and do nothing.
-                    blockedLe = 1
+        for d in directions:
+            for i in range(1, 8, 1):
+                currRow = row + d[0] * i #Iterate from current row towards current direction
+                currCol = col + d[1] * i #Iterate from current col towards current direction
+                if((0 <= currRow < 8) and (0 <= currCol < 8)):
+                    if(self.board[currRow][currCol] == "--"):
+                        moves.append(Move((row, col), (currRow, currCol), self.board))
+                    elif (self.board[currRow][currCol][0] == enemyColor):
+                        moves.append(Move((row, col), (currRow, currCol), self.board))
+                        break #Break upon first enemy encountered
+                    else:
+                        break #Break in friendly unit case
 
         return moves
     
     def getQueenMoves(self, row, col, moves):
         pass
-    def getKingMoves(self, row, col, moves):
-        
-        if self.whiteToMove == True:
-            for i in range(-1, 2):
-                try:
-                    if self.board[row+1][col+i][0] not in ("w"): #Check Downwards
-                        moves.append(Move((row, col), (row+1, col+i), self.board))
-                except IndexError:
-                    pass
-                try:
-                    if self.board[row-1][col+i][0] not in ("w"): #Check Upwards
-                        moves.append(Move((row, col), (row-1, col+i), self.board))
-                except IndexError:
-                    pass
 
-            try:
-                if self.board[row][col-1][0] not in ("w"): #Check left of king
-                    moves.append(Move((row, col), (row, col-1), self.board)) 
-            except IndexError:
-                pass
-            try:
-                if self.board[row][col+1][0] not in ("w"): #Check right of king
-                    moves.append(Move((row, col), (row, col+1), self.board)) 
-            except IndexError:
-                pass
-        else:
-            for i in range(-1, 2):
-                try:
-                    if self.board[row+1][col+i][0] not in ("w"): #Check Downwards
-                        moves.append(Move((row, col), (row+1, col+i), self.board))
-                except IndexError:
-                    pass
-                try:
-                    if self.board[row-1][col+i][0] not in ("w"): #Check Upwards
-                        moves.append(Move((row, col), (row-1, col+i), self.board))
-                except IndexError:
-                    pass
+    def getKingMoves(self, row, col, moves):    
+        directions = ((-1, 0), (1, 0), (0, -1), (0, 1), (-1, -1), (1, -1), (-1, 1), (1, 1)) #All directions
+        enemyColor =  "b" if self.whiteToMove else "w"
 
-            try:
-                if self.board[row][col-1][0] not in ("w"): #Check left of king
-                    moves.append(Move((row, col), (row, col-1), self.board)) 
-            except IndexError:
-                pass
-            try:
-                if self.board[row][col+1][0] not in ("w"): #Check right of king
-                    moves.append(Move((row, col), (row, col+1), self.board)) 
-            except IndexError:
-                pass
+        for d in directions:
+            currRow = row + d[0]  
+            currCol = col + d[1]  
+            print(d, currRow, currCol)
+            if((0 <= currRow < 8) and (0 <= currCol < 8)):
+                if(self.board[currRow][currCol] == "--"):
+                    moves.append(Move((row, col), (currRow, currCol), self.board))
+                elif (self.board[currRow][currCol][0] == enemyColor):
+                    moves.append(Move((row, col), (currRow, currCol), self.board))
 
         return moves
     
