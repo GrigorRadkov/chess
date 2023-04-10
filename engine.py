@@ -26,7 +26,10 @@ class GameState():
             self.board[move.startRow][move.startCol] = "--"
             self.board[move.endRow][move.endCol] = move.pieceMoved
             self.moveLog.append(move)
+            if move.isPromotePawn:
+                self.promotePawn(move.endRow, move.endCol)
             self.whiteToMove = not self.whiteToMove #swap player turn
+
 
     def undoMove(self):
         if len(self.moveLog) != 0: 
@@ -43,10 +46,10 @@ class GameState():
         for r in range(len(self.board)): #rows
             for c in range(len(self.board[r])): #columns in row
                 turn = self.board[r][c][0]
-                print(f"Row: {r}, Col: {c}, Turn: {turn}")
+                #print(f"Row: {r}, Col: {c}, Turn: {turn}")
                 if (self.whiteToMove and turn == "w") or (not self.whiteToMove and turn == "b"):
                     piece = self.board[r][c][1]
-                    print(f"Row: {r}, Col: {c}, Piece: {piece}")
+                    #print(f"Row: {r}, Col: {c}, Piece: {piece}")
                     if piece == 'p': # Switch to match case statements/dictionary that calls a function for each piece type
                         moves = self.getPawnMoves(r, c, moves)         
                     elif piece == 'N':
@@ -98,7 +101,7 @@ class GameState():
         for d in directions:
             currRow = row + d[0]  
             currCol = col + d[1]  
-            print(d, currRow, currCol)
+            #print(d, currRow, currCol)
             if((0 <= currRow < 8) and (0 <= currCol < 8)):
                 if(self.board[currRow][currCol] == "--"):
                     moves.append(Move((row, col), (currRow, currCol), self.board))
@@ -157,7 +160,7 @@ class GameState():
         for d in directions:
             currRow = row + d[0]  
             currCol = col + d[1]  
-            print(d, currRow, currCol)
+            #print(d, currRow, currCol)
             if((0 <= currRow < 8) and (0 <= currCol < 8)):
                 if(self.board[currRow][currCol] == "--"):
                     moves.append(Move((row, col), (currRow, currCol), self.board))
@@ -166,12 +169,15 @@ class GameState():
 
         return moves
     
-    def promotePawn(self, row, col, moves):
-        pass
+    def promotePawn(self, row, col):
+        #Just turn into a queen for now, will add a gui query later
+        self.board[row][col] = "wQ" if self.whiteToMove else "bQ"
+
 
 class Move():
 
     #Notation switch
+    isPromotePawn = 0
     ranksToRows =  {"1": 7, "2": 6, "3": 5, "4": 4, "5":3, "6": 2, "7": 1, "8": 0}
     rowsToRank = {val: key for key, val in ranksToRows.items()}
     filesToCols =  {"a": 0, "b": 1, "c": 2, "d": 3, "e":4, "f": 5, "g": 6, "h":7}
@@ -185,6 +191,8 @@ class Move():
         self.pieceMoved = board[self.startRow][self.startCol]
         self.pieceCaptured = board[self.endRow][self.endCol]
         self.moveId = self.startRow*1000 + self.startCol*100 + self.endRow*10 + self.endCol
+        if board[self.startRow][self.startCol][1] == "p":
+            self.isPromotePawn = 1 if ((self.endRow == 0) or (self.endRow == 7)) else 0
         print("Move Init:", self.moveId)
 
     def __eq__(self, other):
